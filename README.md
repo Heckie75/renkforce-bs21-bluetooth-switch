@@ -3,12 +3,12 @@ Full-features shell script in order to manage Renkforce's BS-21 bluetooth switch
 
 The Renkforce BS-21 is a remote 230V switch. It was sold by Conrad Elektronic in Germany a few years ago. For details take a look at [Amazon](https://www.amazon.de/Renkforce-Bluetooth-Funk-Steckdose-Innenbereich-BS-21/dp/B00PH8XF70)
 
-In comparison to many remote switches which use the 433MHz band the BS-21 is based on bluetooth v2.1. The advantage is that there is no need to have additional senders and receivers connected via GPIO. Since I want to use an Intel NUC as home server instead of a Raspberry Pi, the BS-21 was my first choice. The NUC doesn't have GPIO pins. USB 433MHz dongles doesn't seem to be available. An other advantage is that you get the real state of the power switch since bi-directional communication is supported. 
+In comparison to many remote switches which use the 433MHz band the BS-21 is based on bluetooth v2.1. The advantage is that there is no need to have additional senders and receivers connected via GPIO. Since I want to use an Intel NUC as a home server instead of a Raspberry Pi, the BS-21 was my first choice. The NUC doesn't have GPIO pins. USB 433MHz dongles doesn't seem to be available. Another advantage is that you get the real state of the power switch since bi-directional communication is supported. 
 
 The BS-21 has typical features of a timeclock:
 * 20 power-on timers and 20 power-off timers which can be individually assigned to weekdays
-* random mode which turns power on and of in defined period
-* countdown mode in order to switch power on or off after certain time period 
+* random mode which turns power on and off in defined period
+* countdown mode in order to switch power on or off after certain period 
 * internal clock. However, quality seems to be poor. The clock has a difference between 2 and 5 minutes per day!
 
 The BS-21 requires explicit pairing and is secured by pin so that your neighbour can't take control.
@@ -18,7 +18,7 @@ For official Renkforce BS-21 manual visit [Conrad](http://www.produktinfo.conrad
 ## Getting started
 Before you can use the power switch it is required to perform bluetooth pairing. In order to pair the switch it must be in pairing mode which is the case after
 *  the switch has been plugged
-*  the switch has been set into pairing mode e.g. by an other device which has already been paired.
+*  the switch has been set into pairing mode, e.g. by an other device which has already been paired.
 
 In both cases the pairing mode runs just for 2 minutes so that you must hurry up.
 
@@ -49,7 +49,7 @@ Pairing successful
 ```
 
 ## Aliases
-For convenience reasons I recommend to make use aliases. Instead of entering the mac address and pin each time you want to run the script, you can call the script by using meaningful names. 
+For convenience reasons I recommend to use aliases. Instead of entering the mac address and pin each time you want to run the script, you can call the script by using meaningful names. 
 
 The script tries to read a file called `.known_bs21` which must be located in your home folder. It is a text file with three columns:
 1. MAC address
@@ -101,6 +101,7 @@ $ bs21 -help
  -timer <n:1-20> <on|off> <mtwtfss> <hh:mm>	sets specific timer (1-20) with action (turn on / turn off), daymask, e.g. MTWTFss for Monday to Friday, starttime
  -timer-clear <n:1-20> <on|off>  	resets specific timer
  -timers                         	prints all timer information
+ -toggle                          toggles switch
  -visible                        	make bluetooth switch visible for a while so that it can be discovered by bluetooth services
  ```
 
@@ -131,6 +132,8 @@ You can also use an alias and leave pin out if you have provided it in `~/.known
 ```
 $ bs21.py Coffeemachine -off
 ```
+
+You can also toggle the switch by using the `-toggle` command.
 
 **Note**: 
 You don't even have to write the whole alias. This works as well:
@@ -174,7 +177,7 @@ $ bs21.py Coffee -status
 ```
 
 ## Sync time
- The internal clock of the bluetooth swith is very poor. I have seen differences between 2 and 5 minutes per day. You should synchronize the time frequently. Actually I have setup a cron-job which synchronizes a few times per day. 
+ The internal clock of the bluetooth switch is very poor. I have seen differences between 2 and 5 minutes per day. You should synchronize the time frequently. Actually I have setup a cron-job which synchronizes the device a few times per day. 
 
  Synchronization works like this.
  ```
@@ -213,7 +216,7 @@ In this example random mode will be set for Saturday at 9:30 for 2:00 hours. The
 Random mode can be stopped by calling `-random-clear`
 
 ## Timers
-The bluetooth switch has 40 timer slots: 20 for turning power on and another 20 for turning power off. On and off timers are totally indipendent. 
+The bluetooth switch has 40 timer slots: 20 for turning power on and another 20 for turning power off. On and off timers are totally independent. 
 
 Program a timer for starting your coffeemachine from Monday to Friday at 7:10 a.m.
 ```
@@ -253,7 +256,7 @@ $ bs21.py Coffee -clear-all
 ```
 
 ## Command queueing
-Sometimes you want to pass more than one command to the bluetooth switch. Since the bluetooth connection initialization takes often a few seconds the connection is initialized at the beginning and closed at the very end of the queue. 
+Sometimes you want to pass more than one command to the bluetooth switch. Since the bluetooth connection initialization takes often a few seconds the connection is initialized once at the beginning and closed at the very end of the queue. 
 
 The script allows command queueing:
 ```

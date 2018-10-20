@@ -71,6 +71,11 @@ COMMANDS = {
         _PAYLOAD : "REL0",                                # no parameters
         _PARAMS : []
         },
+    "toggle" : {
+        _USAGE : "-toggle",
+        _DESCR : "toggles switch",
+        _PARAMS : []
+        },        
     "status" : {
         _USAGE : "-status",
         _DESCR : "just read and print the basic information of the bluetooth switch",
@@ -468,6 +473,17 @@ def turn_off(client_socket, pin):
 
 
 
+def toggle(client_socket, pin):
+    
+    get_status(client_socket, pin)
+    if device["status"]["on"]:
+        turn_off(client_socket, pin)
+    else:
+        turn_on(client_socket, pin)
+
+
+
+
 def _translate_for_timer_call(id, type, weekdays, hours, minutes):
 
     params = [id, type, hours, minutes]
@@ -702,7 +718,7 @@ def change_pin(client_socket, pin, newpin):
                 "ERROR: Pin must be 4-digit numeric\n"))
 
     payload = COMMANDS["pin"][_PAYLOAD] % pin
-    response = send(client_socket, payload, newpin)
+    send(client_socket, payload, newpin)
 
     device["device"]["pin"] = "%s" % pin
 
@@ -720,7 +736,7 @@ def set_visible(client_socket, pin):
         print(" SEND: set visible for next 2 minutes")
 
     payload = COMMANDS["visible"][_PAYLOAD]
-    response = send(client_socket, payload, pin)
+    send(client_socket, payload, pin)
 
     if debug:
         print(" SUCCESS: visible for next 2 minutes")
@@ -932,6 +948,9 @@ def _do_commands(target, pin, commands):
 
             elif func == "off":
                 turn_off(client_socket, pin)
+
+            elif func == "toggle":
+                toggle(client_socket, pin)
 
             elif func == "status":
                 get_status(client_socket, pin)
