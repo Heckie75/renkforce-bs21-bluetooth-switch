@@ -160,7 +160,7 @@ COMMANDS = {
     "sync" : {
         _USAGE : "-sync",
         _DESCR : "synchronizes current time with your computer",
-        _PAYLOAD : "TIME %02d %02d %02d %02d",              # % (weekday, hh, mm, ss)
+        _PAYLOAD : "TIME %s %02d %02d %02d",              # % (weekday, hh, mm, ss)
         _PARAMS : []
         },
     "timers" : {
@@ -399,7 +399,7 @@ def sync_time(client_socket, pin):
         print(" SEND: synchronize time")
 
     now = datetime.datetime.now()
-    weekday = pow(2, now.weekday())
+    weekday = hex(pow(2, now.weekday())).replace("x", "0")[-2:]
 
     payload = COMMANDS["sync"][_PAYLOAD] % (weekday, now.hour, now.minute, now.second)
     response = send(client_socket, payload, pin)
@@ -495,7 +495,7 @@ def _build_daymask(mon, tue, wed, thu, fri, sat, sun):
     b += 16 if fri else 0
     b += 32 if sat else 0
     b += 64 if sun else 0
-    
+
     return hex(b).replace("x", "0")[-2:].upper()
 
 
@@ -567,7 +567,7 @@ def set_random(client_socket, pin, hours, minutes, dur_hours, dur_minutes, mon, 
         print(" SEND: set random")
 
     id = 41
-    
+
     _d = _build_daymask(mon, tue, wed, thu, fri, sat, sun)
     _h = int(hours) % 24
     _m = int(minutes) % 60
@@ -800,7 +800,8 @@ def _parse_status(response):
         "countdown" : (ord(matcher.group(4)) & 16) > 0
         }
 
-    day_in_hex = hex(int(matcher.group(6))).replace("x", "0")
+    # day_in_hex = hex(int(matcher.group(6))).replace("x", "0")
+    day_in_hex = matcher.group(6)
     _time = _build_weekdays_and_time(day_in_hex, matcher.group(7), matcher.group(8), matcher.group(9))
 
     return _state, _time
@@ -881,6 +882,7 @@ def printable_status():
     s += " Over temperature: %s\n" % ("yes" if _status["overtemp"] else "no")
     s += "\n"
     s += " Time:             %s, %s" % (_time["weekday"][0], _time["time"])
+    s += "\n"
     return s
 
 
@@ -892,7 +894,7 @@ def printable_timers():
 
     rand = device["random"]
     if len(rand["schedule"]["weekday"]) > 0:
-        s += "Random: %s on %s until %s, %s %s\n" % (
+        s += " Random:           %s on %s until %s, %s %s\n" % (
                                             rand["schedule"]["time"],
                                             ", ".join(rand["schedule"]["weekday"]),
                                             rand["duration"][:-3],
@@ -901,7 +903,7 @@ def printable_timers():
                                             )
 
     if device["countdown"]["active"]:
-        s += "Countdown: %s, switch %s in %s\n" % (
+        s += " Countdown:        %s, switch %s in %s\n" % (
                                                 "Running" if device["countdown"]["active"] else "Stopped",
                                                 device["countdown"]["type"],
                                                 device["countdown"]["remaining"]
@@ -909,8 +911,7 @@ def printable_timers():
 
     for timer in device["timers"]:
         if len(timer["schedule"]["weekday"]) > 0:
-            s += "%s-Timer %02d: Switch %s at %s on %s\n" % (
-                                                "On" if timer["slot"] <=20 else "Off",
+            s += " Timer %02d:         Switch %s at %s on %s\n" % (
                                                 timer["slot"] % 20,
                                                 timer["type"],
                                                 timer["schedule"]["time"][:-3],
