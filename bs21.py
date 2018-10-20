@@ -78,21 +78,21 @@ COMMANDS = {
         _PARAMS : []
         },
     "countdown-until" : {
-        _USAGE : "-countdown-until <on|off> <hh:mm>",
+        _USAGE : "-countdown-until <hh:mm> <on|off>",
         _DESCR : "starts countdown with action (turn on / turn off) and specific endtime",
         _PAYLOAD : "SET43 %02d %02d %02d %02d 01",        # % (0=off/1=on, dur_hh, dur_mm, dur_ss)
         _PARAMS : [
-            r"(on|off)",
-            r"([01]?[0-9]|2[0-3]):([0-5][0-9])"
+            r"([01]?[0-9]|2[0-3]):([0-5][0-9])",            
+            r"(on|off)"
             ]
         },
-    "countdown-for" : {
-        _USAGE : "-countdown-for <on|off> <hh:mm>",
+    "countdown" : {
+        _USAGE : "-countdown <hh:mm:ss> <on|off>",
         _DESCR : "starts countdown with action (turn on / turn off) and duration",
         _PAYLOAD : "SET43 %02d %02d %02d %02d 01",        # % (0=off/1=on, dur_hh, dur_mm, dur_ss)
         _PARAMS : [
-            r"(on|off)",
-            r"([01]?[0-9]|2[0-3]):([0-5][0-9])"
+            r"([01]?[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])",
+            r"(on|off)"
             ]
         },
     "countdown-clear" : {
@@ -123,7 +123,7 @@ COMMANDS = {
         },
     "random" : {
         _USAGE : "-random <mtwtfss> <hh:mm> <hh:mm>",
-        _DESCR : "activated random mode with daymask, e.g. mtwtf__ for Monday to Friday, starttime und duration",
+        _DESCR : "activated random mode with daymask, e.g. MTWTFss for Monday to Friday, starttime und duration",
         _PAYLOAD : "SET%02d %s %02d %02d %02d %02d 01 00", # % (id, daymask, start_hh, start_mm, dur_hh, dur_mm)
         _PARAMS : [
             r"([Mm][Tt][Ww][Tt][Ff][Ss][Ss])",
@@ -185,13 +185,6 @@ COMMANDS = {
         _USAGE : "-debug",
         _DESCR : "prints raw data sent and received",
         _PARAMS : []
-        },
-    "alias" : {
-        _USAGE : "-alias <alphanumeric w/o white-characters>",
-        _DESCR : "sets an alias for device",
-        _PARAMS : [
-            r"([A-Za-z0-9_-]+)"
-            ]
         }
     }
 
@@ -611,17 +604,17 @@ def reset_random(client_socket, pin):
 
 
 
-def set_countdown_for(client_socket, pin, on, hours, minutes, seconds = 0):
+def set_countdown(client_socket, pin, hours, minutes, seconds, type):
 
     if debug:
         print(" SEND: set countdown")
 
-    _on = 1 if on == "on" else 0
+    _t = 1 if type == "on" else 0
     _h = int(hours) % 24
     _m = int(minutes) % 60
     _s = int(seconds) % 60
 
-    payload = COMMANDS["countdown-for"][_PAYLOAD] % (_on, _h, _m, _s)
+    payload = COMMANDS["countdown"][_PAYLOAD] % (_t, _h, _m, _s)
     response = send(client_socket, payload, pin)
 
     if not _parse_response(response):
@@ -636,7 +629,7 @@ def set_countdown_for(client_socket, pin, on, hours, minutes, seconds = 0):
 
 
 
-def set_countdown_until(client_socket, pin, on, hour, minute):
+def set_countdown_until(client_socket, pin, hour, minute, type):
 
     now = datetime.datetime.now()
     then = datetime.datetime(1900, 1, 1, int(hour) % 24, int(minute) % 60, 0)
@@ -646,7 +639,7 @@ def set_countdown_until(client_socket, pin, on, hour, minute):
     minutes = duration.seconds % 3600 / 60
     seconds = duration.seconds % 60
 
-    set_countdown_for(client_socket, pin, on, hours, minutes, seconds)
+    set_countdown(client_socket, pin, hours, minutes, seconds, type)
 
 
 
@@ -837,7 +830,6 @@ def _parse_info(response):
     _random = {
         "slot" : 41,
         "active" : True if raw[5] != "00" else False,
-        "simultaneously" : True if raw[6] != "00" else False,
         "schedule" : _build_weekdays_and_time(raw[0], raw[1], raw[2]),
         "duration" : _build_time(raw[3], raw[4])
     }
@@ -894,12 +886,11 @@ def printable_timers():
 
     rand = device["random"]
     if len(rand["schedule"]["weekday"]) > 0:
-        s += " Random:           %s on %s until %s, %s %s\n" % (
+        s += " Random:           %s on %s for %s hours, %s\n" % (
                                             rand["schedule"]["time"],
                                             ", ".join(rand["schedule"]["weekday"]),
                                             rand["duration"][:-3],
-                                            "active" if rand["active"] else "inactive",
-                                            "simultaneously" if rand["simultaneously"] else "",
+                                            "active" if rand["active"] else "inactive"
                                             )
 
     if device["countdown"]["active"]:
@@ -946,8 +937,8 @@ def _do_commands(target, pin, commands):
                 get_status(client_socket, pin)
                 print(printable_status())
 
-            elif func == "countdown-for":
-                set_countdown_for(client_socket, pin, *call)
+            elif func == "countdown":
+                set_countdown(client_socket, pin, *call)
 
             elif func == "countdown-until":
                 set_countdown_until(client_socket, pin, *call)
@@ -989,9 +980,6 @@ def _do_commands(target, pin, commands):
                 get_status(client_socket, pin)
                 get_timers(client_socket, pin)
                 print(json.dumps(device, indent = 2, sort_keys = False))
-
-            elif func == "alias":
-                pass # TODO
 
             elif func == "sleep":
                 time.sleep(int(call[0]))
