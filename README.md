@@ -51,7 +51,7 @@ Pairing successful
 ## Aliases
 For convenience reasons I recommend to make use aliases. Instead of entering the mac address and pin each time you want to run the script, you can call the script by using meaningful names. 
 
-The script tries to read a file called ˋ.known_bs21ˋ which must be located in your home folder. It is a text file with three columns:
+The script tries to read a file called `.known_bs21` which must be located in your home folder. It is a text file with three columns:
 1. MAC address
 2. PIN
 3. Meaningful name
@@ -78,7 +78,7 @@ $ bs21.py 5C:B6:CC:00:28:38 1234 -on
 In order to get an overview of the full feature set enter the following:
 ```
 $ bs21 -help
- Renkforce BS-21 bluetooth power switch command line interface  for Linux / Raspberry Pi
+ Renkforce BS-21 bluetooth power switch command line interface for Linux / Raspberry Pi
 
  USAGE:   bs21.py <mac> <pin> <command1> <params1> <command2> ...
  EXAMPLE: sync time and power on
@@ -140,7 +140,7 @@ $ bs21.py Coffee -off
 
 Now let's read the status of the switch:
 ```
-$ bs21.py Nacht -status
+$ bs21.py Coffee -status
 
  MAC-Address:      5C:B6:CC:00:20:68
  PIN:              1234
@@ -184,11 +184,11 @@ $ bs21.py Coffee -status
 ## Countdown
 You can start a countdown which turns the switch on or off after the given time. 
 
-You can pass a duration (hh:mm:ss) after the switch will turn:
+You can pass a duration (hh:mm:ss) after the switch will turn on or off:
 ```
 $ bs21.py Coffee -countdown 00:10:00 off
 ```
-*Note that the script will NOT change the switch, so that in this example it is assumed that the switch is already turned on.*
+*Note that the script will NOT toggle the switch, so that in this example it is assumed that the switch is already turned on.*
 
 You can also specify a time instead of passing a duration:
 ```
@@ -260,7 +260,7 @@ The script allows command queueing:
 USAGE:   bs21.py <mac> <pin> <command1> <params1> <command2> ..
 ```
 
-For example, sometime I would like to start the coffeemachine and 10 minutes. In addition I would like to synchronize the clock because I expect that it is wrong again. 
+For example, sometime I would like to start the coffeemachine and run it for 10 minutes. In addition I would like to synchronize the clock because I expect that it is wrong again. 
 ```
 $ bs21.py Coffee -on -sync -countdown 00:10:00 off
 ```
@@ -268,7 +268,7 @@ $ bs21.py Coffee -on -sync -countdown 00:10:00 off
 * Step 2 is to synchronize time
 * Step 3 is to set countdown for 10 minutes which turns switch off.
 
-There is a special command called `-sleep`, This can be used in order to pause the command queue for a couple of seconds, e.g.
+There is a special command called `-sleep`. This can be used in order to pause the command queue for a couple of seconds, e.g.
 ```
 $ bs21.py Light -on -sleep 1 -off -sleep 1 -on -sleep 1 -off
 ```
