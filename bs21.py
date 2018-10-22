@@ -75,7 +75,7 @@ COMMANDS = {
         _USAGE : "-toggle",
         _DESCR : "toggles switch",
         _PARAMS : []
-        },        
+        },
     "status" : {
         _USAGE : "-status",
         _DESCR : "just read and print the basic information of the bluetooth switch",
@@ -87,8 +87,8 @@ COMMANDS = {
         _DESCR : "starts countdown with action (turn on / turn off) and specific endtime",
         _PAYLOAD : "SET43 %02d %02d %02d %02d 01",        # % (0=off/1=on, dur_hh, dur_mm, dur_ss)
         _PARAMS : [
-            r"([01]?[0-9]|2[0-3]):([0-5][0-9])",            
-            r"(on|off)"
+            r"^([01]?[0-9]|2[0-3]):([0-5][0-9])$",
+            r"^(on|off)$"
             ]
         },
     "countdown" : {
@@ -96,8 +96,8 @@ COMMANDS = {
         _DESCR : "starts countdown with action (turn on / turn off) and duration",
         _PAYLOAD : "SET43 %02d %02d %02d %02d 01",        # % (0=off/1=on, dur_hh, dur_mm, dur_ss)
         _PARAMS : [
-            r"([01]?[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])",
-            r"(on|off)"
+            r"^([01]?[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$",
+            r"^(on|off)$"
             ]
         },
     "countdown-clear" : {
@@ -111,10 +111,10 @@ COMMANDS = {
         _DESCR : "sets specific timer (1-20) with action (turn on / turn off), daymask, e.g. MTWTFss for Monday to Friday, starttime",
         _PAYLOAD : "SET%02d %s %02d %02d %02d 01",       # % (id[1-20]->on / id[21-40]->off, daymask, hh, mm)
         _PARAMS : [
-            r"([0-9]{1}|1[0-9]{1}|20)",
-            r"(on|off)",
-            r"([Mm][Tt][Ww][Tt][Ff][Ss][Ss])",
-            r"([01]?[0-9]|2[0-3]):([0-5][0-9])"
+            r"^([0-9]{1}|1[0-9]{1}|20)$",
+            r"^(on|off)$",
+            r"^([Mm][Tt][Ww][Tt][Ff][Ss][Ss])$",
+            r"^([01]?[0-9]|2[0-3]):([0-5][0-9])$"
             ]
         },
     "timer-clear" : {
@@ -122,8 +122,8 @@ COMMANDS = {
         _DESCR : "resets specific timer",
         _PAYLOAD : "CLEAR%02d",                            # no parameters
         _PARAMS : [
-            r"([0-9]{1}|1[0-9]{1}|20)",
-            r"(on|off)"
+            r"^([0-9]{1}|1[0-9]{1}|20)$",
+            r"^(on|off)$"
         ]
         },
     "random" : {
@@ -131,9 +131,9 @@ COMMANDS = {
         _DESCR : "activated random mode with daymask, e.g. MTWTFss for Monday to Friday, starttime und duration",
         _PAYLOAD : "SET%02d %s %02d %02d %02d %02d 01 00", # % (id, daymask, start_hh, start_mm, dur_hh, dur_mm)
         _PARAMS : [
-            r"([Mm][Tt][Ww][Tt][Ff][Ss][Ss])",
-            r"([01]?[0-9]|2[0-3]):([0-5][0-9])",
-            r"([01]?[0-9]|2[0-3]):([0-5][0-9])"
+            r"^([Mm][Tt][Ww][Tt][Ff][Ss][Ss])$",
+            r"^([01]?[0-9]|2[0-3]):([0-5][0-9])$",
+            r"^([01]?[0-9]|2[0-3]):([0-5][0-9])$"
             ]
         },
     "random-clear" : {
@@ -153,7 +153,7 @@ COMMANDS = {
         _DESCR : "set new pin with 4-digits",
         _PAYLOAD : "NEWC #%s ",                          # % (newpin)
         _PARAMS : [
-            r"([0-9]{4})"
+            r"^([0-9]{4})$"
             ]
         },
     "visible" : {
@@ -183,7 +183,7 @@ COMMANDS = {
         _USAGE : "-sleep <nnn>",
         _DESCR : "script sleeps for n seconds and stays connected. Helpful for queueing commands",
         _PARAMS : [
-            r"([0-9_-]{1,3})"
+            r"^([0-9_-]{1,3})$"
             ]
         },
     "debug" : {
@@ -474,7 +474,7 @@ def turn_off(client_socket, pin):
 
 
 def toggle(client_socket, pin):
-    
+
     get_status(client_socket, pin)
     if device["status"]["on"]:
         turn_off(client_socket, pin)
