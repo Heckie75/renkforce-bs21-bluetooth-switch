@@ -363,7 +363,7 @@ class BS21():
 
         raw = response[416:439].split(" ")
 
-        original = datetime.datetime(1900, 1, 1, int(raw[5]), int(raw[6]), int(raw[7]))
+        original = datetime.datetime(2000, 1, 1, int(raw[5]), int(raw[6]), int(raw[7]))
         remaining = datetime.timedelta(hours = int(raw[1]), minutes = int(raw[2]), seconds = int(raw[3]))
         _countdown = {
             "slot" : 43,
