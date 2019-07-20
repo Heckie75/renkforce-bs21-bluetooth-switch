@@ -269,8 +269,9 @@ class BS21():
             client_socket.settimeout(timeout)
             self._client_socket = client_socket
 
-        except:
-            raise BS21Exception("Connection failed")
+        except btcommon.BluetoothError as error:
+            raise BS21Exception("Connection failed, %s" % error)
+
 
 
 
