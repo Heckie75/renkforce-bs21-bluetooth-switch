@@ -48,6 +48,15 @@ Pairing successful
 [BS-21-001514-0-A]# quit
 ```
 
+**Note*
+On Ubuntu this script runs as expected after paring. But on Raspbian it was a hard to make it work since I've always$
+I think that the following command make it work
+```
+sudo hciconfig hci0 sspmode 0
+```
+
+For PIN use 0000.
+
 ## Aliases
 For convenience reasons I recommend to use aliases. Instead of entering the mac address and pin each time you want to run the script, you can call the script by using meaningful names. 
 
