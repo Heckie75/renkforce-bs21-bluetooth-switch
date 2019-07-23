@@ -48,7 +48,7 @@ Pairing successful
 [BS-21-001514-0-A]# quit
 ```
 
-**Note*
+**Note**
 On Ubuntu this script runs as expected after paring. But on Raspbian it was a hard to make it work since I've always$
 I think that the following command make it work
 ```
