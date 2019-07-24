@@ -249,7 +249,7 @@ class BS21():
 
     def _validate_pin(self, pin):
 
-        return pin > "0000" and pin < "9999"
+        return pin >= "0000" and pin <= "9999"
 
 
 
