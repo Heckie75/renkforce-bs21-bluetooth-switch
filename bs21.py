@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 #
 # MIT License
 #
@@ -31,7 +31,7 @@ import re
 import sys
 import time
 
-from bluetooth import *
+import bluetooth
 
 TIMEOUT = 10
 
@@ -264,12 +264,12 @@ class BS21():
     def _connect(self, timeout):
 
         try:
-            client_socket = BluetoothSocket(RFCOMM)
+            client_socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
             client_socket.connect((self._device["device"]["mac"], 1))
             client_socket.settimeout(timeout)
             self._client_socket = client_socket
 
-        except btcommon.BluetoothError as error:
+        except bluetooth.btcommon.BluetoothError as error:
             raise BS21Exception("Connection failed, %s" % error)
 
 
@@ -287,23 +287,23 @@ class BS21():
             raise BS21Exception("ERROR: Failed to send command to device!")
 
         try:
-            raw = ""
+            _str = ""
             while True:
-                r = self._client_socket.recv(1024)
-                if not r:
+                _bytes = self._client_socket.recv(1024)
+                if not _bytes:
                     break
-                raw = raw + r
+                _str = _str + _list_to_string(_bytes)
 
                 # we have reach end of message
-                if r.find("\r\n") != -1:
+                if _str.find("\r\n") != -1:
                     break
         except:
             raise BS21Exception("ERROR: No response from device! Do you want to double-check PIN?")
 
         if self._debug:
-            print(" < %s" % raw.replace("\r\n", ""))
+            print(" < %s" % _str)
 
-        return raw
+        return _str
 
 
 
@@ -687,8 +687,8 @@ class BS21():
         then = datetime.datetime(1900, 1, 1, int(hour) % 24, int(minute) % 60, 0)
 
         duration = (then - now)
-        _h = duration.seconds / 3600
-        _m = duration.seconds % 3600 / 60
+        _h = duration.seconds // 3600
+        _m = duration.seconds % 3600 // 60
         _s = duration.seconds % 60
 
         self.set_countdown(_h, _m, _s, type)
@@ -1028,6 +1028,17 @@ def do_commands(target, pin, commands):
 
 
 
+def _list_to_string(l):
+
+    s = ""
+    for c in l:
+        s += chr(c) if c != 0 else ""
+
+    return s
+
+
+
+
 def _translate_commands(commands):
 
     errors = []
@@ -1109,7 +1120,7 @@ def parse_args(args):
             commands += [command]
 
         # collect parameters of current command
-        else:
+        elif command != None:
             command["params"] += [arg]
 
     commands = _translate_commands(commands)
