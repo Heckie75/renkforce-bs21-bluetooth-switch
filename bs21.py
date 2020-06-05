@@ -35,130 +35,129 @@ import bluetooth
 
 TIMEOUT = 10
 
-_USAGE   = "usage"
-_DESCR   = "descr"
-_PARAMS  = "params"
+_USAGE = "usage"
+_DESCR = "descr"
+_PARAMS = "params"
 
 COMMANDS = {
-    "on" : {
-        _USAGE : "-on",
-        _DESCR : "power switch on",
-        _PARAMS : []
-        },
-    "off" : {
-        _USAGE : "-off",
-        _DESCR : "power switch off",
-        _PARAMS : []
-        },
-    "toggle" : {
-        _USAGE : "-toggle",
-        _DESCR : "toggles switch",
-        _PARAMS : []
-        },
-    "status" : {
-        _USAGE : "-status",
-        _DESCR : "just read and print the basic information of the bluetooth switch",
-        _PARAMS : []
-        },
-    "countdown-until" : {
-        _USAGE : "-countdown-until <hh:mm> <on|off>",
-        _DESCR : "starts countdown with action (turn on / turn off) and specific endtime",
-        _PARAMS : [
+    "on": {
+        _USAGE: "--on",
+        _DESCR: "power switch on",
+        _PARAMS: []
+    },
+    "off": {
+        _USAGE: "--off",
+        _DESCR: "power switch off",
+        _PARAMS: []
+    },
+    "toggle": {
+        _USAGE: "--toggle",
+        _DESCR: "toggles switch",
+        _PARAMS: []
+    },
+    "status": {
+        _USAGE: "--status",
+        _DESCR: "just read and print the basic information of the bluetooth switch",
+        _PARAMS: []
+    },
+    "countdown-until": {
+        _USAGE: "--countdown-until <hh:mm> <on|off>",
+        _DESCR: "starts countdown with action (turn on / turn off) and specific endtime",
+        _PARAMS: [
             r"^([01]?[0-9]|2[0-3]):([0-5][0-9])$",
             r"^(on|off)$"
-            ]
-        },
-    "countdown" : {
-        _USAGE : "-countdown <hh:mm:ss> <on|off>",
-        _DESCR : "starts countdown with action (turn on / turn off) and duration",
-        _PARAMS : [
+        ]
+    },
+    "countdown": {
+        _USAGE: "--countdown <hh:mm:ss> <on|off>",
+        _DESCR: "starts countdown with action (turn on / turn off) and duration",
+        _PARAMS: [
             r"^([01]?[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$",
             r"^(on|off)$"
-            ]
-        },
-    "countdown-clear" : {
-        _USAGE : "-countdown-clear",
-        _DESCR : "resets countdown",
-        _PARAMS : []
-        },
-    "timer" : {
-        _USAGE : "-timer <n:1-20> <on|off> <mtwtfss> <hh:mm>",
-        _DESCR : "sets specific timer (1-20) with action (turn on / turn off), daymask, e.g. MTWTFss for Monday to Friday, starttime",
-        _PARAMS : [
+        ]
+    },
+    "countdown-clear": {
+        _USAGE: "--countdown-clear",
+        _DESCR: "resets countdown",
+        _PARAMS: []
+    },
+    "scheduler": {
+        _USAGE: "--scheduler <n:1-20> <on|off> <mtwtfss> <hh:mm>",
+        _DESCR: "sets specific scheduler (1-20) with action (turn on / turn off), daymask, e.g. MTWTFss for Monday to Friday, starttime",
+        _PARAMS: [
             r"^([0-9]{1}|1[0-9]{1}|20)$",
             r"^(on|off)$",
-            r"^([Mm][Tt][Ww][Tt][Ff][Ss][Ss])$",
+            r"^([Mm_][Tt_][Ww_][Tt_][Ff_][Ss_][Ss_])$",
             r"^([01]?[0-9]|2[0-3]):([0-5][0-9])$"
-            ]
-        },
-    "timer-clear" : {
-        _USAGE : "-timer-clear <n:1-20> <on|off>",
-        _DESCR : "resets specific timer",
-        _PARAMS : [
+        ]
+    },
+    "scheduler-clear": {
+        _USAGE: "--scheduler-clear <n:1-20> <on|off>",
+        _DESCR: "resets specific scheduler",
+        _PARAMS: [
             r"^([0-9]{1}|1[0-9]{1}|20)$",
             r"^(on|off)$"
         ]
-        },
-    "random" : {
-        _USAGE : "-random <mtwtfss> <hh:mm> <hh:mm>",
-        _DESCR : "activated random mode with daymask, e.g. MTWTFss for Monday to Friday, starttime und duration",
-        _PARAMS : [
-            r"^([Mm][Tt][Ww][Tt][Ff][Ss][Ss])$",
+    },
+    "random": {
+        _USAGE: "--random <mtwtfss> <hh:mm> <hh:mm>",
+        _DESCR: "activated random mode with daymask, e.g. MTWTFss for Monday to Friday, starttime und duration",
+        _PARAMS: [
+            r"^([Mm_][Tt_][Ww_][Tt_][Ff_][Ss_][Ss_])$",
             r"^([01]?[0-9]|2[0-3]):([0-5][0-9])$",
             r"^([01]?[0-9]|2[0-3]):([0-5][0-9])$"
-            ]
-        },
-    "random-clear" : {
-        _USAGE : "-random-clear",
-        _DESCR : "stops random mode",
-        _PARAMS : []
-        },
-    "clear-all" : {
-        _USAGE : "-clear-all",
-        _DESCR : "clears alls timers, random mode and countdown",
-        _PARAMS : []
-        },
-    "pin" : {
-        _USAGE : "-pin <nnnn>",
-        _DESCR : "set new pin with 4-digits",
-        _PARAMS : [
+        ]
+    },
+    "random-clear": {
+        _USAGE: "--random-clear",
+        _DESCR: "stops random mode",
+        _PARAMS: []
+    },
+    "clear-all": {
+        _USAGE: "--clear-all",
+        _DESCR: "clears alls schedulers, random mode and countdown",
+        _PARAMS: []
+    },
+    "pin": {
+        _USAGE: "--pin <nnnn>",
+        _DESCR: "set new pin with 4-digits",
+        _PARAMS: [
             r"^([0-9]{4})$"
-            ]
-        },
-    "visible" : {
-        _USAGE : "-visible",
-        _DESCR : "make bluetooth switch visible for a while so that it can be discovered by bluetooth services",
-        _PARAMS : []
-        },
-    "sync" : {
-        _USAGE : "-sync",
-        _DESCR : "synchronizes current time with your computer",
-        _PARAMS : []
-        },
-    "timers" : {
-        _USAGE : "-timers",
-        _DESCR : "prints all timer information",
-        _PARAMS : []
-        },
-    "json" : {
-        _USAGE : "-json",
-        _DESCR : "prints information in json format",
-        _PARAMS : []
-        },
-    "sleep" : {
-        _USAGE : "-sleep <nnn>",
-        _DESCR : "script sleeps for n seconds and stays connected. Helpful for queueing commands",
-        _PARAMS : [
+        ]
+    },
+    "visible": {
+        _USAGE: "--visible",
+        _DESCR: "make bluetooth switch visible for a while so that it can be discovered by bluetooth services",
+        _PARAMS: []
+    },
+    "sync": {
+        _USAGE: "--sync",
+        _DESCR: "synchronizes current time with your computer",
+        _PARAMS: []
+    },
+    "schedulers": {
+        _USAGE: "--schedulers",
+        _DESCR: "prints all scheduler information",
+        _PARAMS: []
+    },
+    "json": {
+        _USAGE: "--json",
+        _DESCR: "prints information in json format",
+        _PARAMS: []
+    },
+    "sleep": {
+        _USAGE: "--sleep <nnn>",
+        _DESCR: "script sleeps for n seconds and stays connected. Helpful for queueing commands",
+        _PARAMS: [
             r"^([0-9_-]{1,3})$"
-            ]
-        },
-    "debug" : {
-        _USAGE : "-debug",
-        _DESCR : "prints raw data sent and received",
-        _PARAMS : []
-        }
+        ]
+    },
+    "debug": {
+        _USAGE: "--debug",
+        _DESCR: "prints raw data sent and received",
+        _PARAMS: []
     }
-
+}
 
 
 
@@ -167,43 +166,45 @@ class BS21Exception(Exception):
         self.message = message
 
 
-
-
 class BS21():
 
     _debug = False
     _client_socket = None
     _device = {
-        "device" : {
-            "mac" : "",
-            "pin" : "",
-            "alias" : ""
-            },
-        "status" : None,
-        "time" : None,
-        "timers" : [],
-        "random" : None,
-        "countdown" : None
+        "device": {
+            "mac": "",
+            "pin": "",
+            "alias": ""
+        },
+        "status": None,
+        "time": None,
+        "schedulers": [],
+        "random": None,
+        "countdown": None
     }
 
     _PAYLOAD = {
-        "on" : "REL1",                                     # no parameters
-        "off" : "REL0",                                    # no parameters
-        "status" : "RELX",                                 # no parameters
-        "countdown" : "SET43 %02d %02d %02d %02d 01",      # % (0=off/1=on, dur_hh, dur_mm, dur_ss)
-        "countdown-clear" :"CLEAR43",                      # no parameters
-        "timer" : "SET%02d %s %02d %02d %02d 01",          # % (id[1-20]->on / id[21-40]->off, daymask, hh, mm)
-        "timer-clear" : "CLEAR%02d",                       # no parameters
-        "random" : "SET%02d %s %02d %02d %02d %02d 01 00", # % (id, daymask, start_hh, start_mm, dur_hh, dur_mm)
-        "random-clear" : "CLEAR41",                        # no parameters
-        "clear-all" : "CLEAR00",                           # no parameters
-        "pin" : "NEWC #%s ",                               # % (newpin)
-        "visible" : "VISB",                                # no parameters
-        "sync" : "TIME %s %02d %02d %02d",                 # % (weekday, hh, mm, ss)
-        "timers" : "INFO"                                  # no parameters
+        "on": "REL1",                                     # no parameters
+        "off": "REL0",                                    # no parameters
+        "status": "RELX",                                 # no parameters
+        # % (0=off/1=on, dur_hh, dur_mm, dur_ss)
+        "countdown": "SET43 %02d %02d %02d %02d 01",
+        "countdown-clear": "CLEAR43",                      # no parameters
+        # % (id[1-20]->on / id[21-40]->off, daymask, hh, mm)
+        "scheduler": "SET%02d %s %02d %02d %02d 01",
+        "scheduler-clear": "CLEAR%02d",                       # no parameters
+        # % (id, daymask, start_hh, start_mm, dur_hh, dur_mm)
+        "random": "SET%02d %s %02d %02d %02d %02d 01 00",
+        "random-clear": "CLEAR41",                        # no parameters
+        "clear-all": "CLEAR00",                           # no parameters
+        "pin": "NEWC #%s ",                               # % (newpin)
+        "visible": "VISB",                                # no parameters
+        # % (weekday, hh, mm, ss)
+        "sync": "TIME %s %02d %02d %02d",
+        "schedulers": "INFO"                                  # no parameters
     }
 
-    MAC_PATTERN    = "5C:B6:CC:[0-9A-F]{2}:[0-9A-F]{2}:[0-9A-F]{2}"
+    MAC_PATTERN = "5C:B6:CC:[0-9A-F]{2}:[0-9A-F]{2}:[0-9A-F]{2}"
     _STATUS_PATTERN = "\$(BS-21)-([0-9]+)-([01])-(.) (V[0-9]+.[0-9]+) ([0-9]{2}) ([0-9]{2}) ([0-9]{2}) ([0-9]{2})"
     #                   ||       |        |      |      |                |          |          |          |         | Newline "\r\n"
     #                   ||       |        |      |      |                |          |          |          | Clock seconds, e.g. "59"
@@ -217,12 +218,9 @@ class BS21():
     #                   |+ Model, always "BS-21"
     #                   + Sign for begin response
 
-    _WEEKDAYS       = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+    _WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
-
-
-
-    def __init__(self, mac, pin = "1234", alias = None, timeout = 20):
+    def __init__(self, mac, pin="1234", alias=None, timeout=20):
 
         if not self._validate_mac(mac):
             raise BS21Exception("ERROR: MAC address < %s > is invalid!" % mac)
@@ -236,29 +234,18 @@ class BS21():
 
         self._connect(timeout)
 
-
-
-
     def _validate_mac(self, mac):
 
         matcher = re.search(self.MAC_PATTERN, mac)
         return matcher != None
 
-
-
-
     def _validate_pin(self, pin):
 
         return pin >= "0000" and pin <= "9999"
 
-
-
-
     def set_debug(self, b):
 
         self._debug = b
-
-
 
 
     def _connect(self, timeout):
@@ -272,17 +259,14 @@ class BS21():
         except bluetooth.btcommon.BluetoothError as error:
             raise BS21Exception("Connection failed, %s" % error)
 
-
-
-
-
     def _send(self, payload):
 
         if self._debug:
             print(" > %s#%s" % (payload, self._device["device"]["pin"]))
 
         try:
-            self._client_socket.send("%s#%s\r\n" % (payload, self._device["device"]["pin"]))
+            self._client_socket.send("%s#%s\r\n" % (
+                payload, self._device["device"]["pin"]))
         except:
             raise BS21Exception("ERROR: Failed to send command to device!")
 
@@ -298,90 +282,85 @@ class BS21():
                 if _str.find("\r\n") != -1:
                     break
         except:
-            raise BS21Exception("ERROR: No response from device! Do you want to double-check PIN?")
+            raise BS21Exception(
+                "ERROR: No response from device! Do you want to double-check PIN?")
 
         if self._debug:
             print(" < %s" % _str)
 
         return _str
 
-
-
-
     def _parse_status(self, response):
 
         if response.startswith("$ERR"):
-            raise BS21Exception("ERROR: Device has explicitly responded with error! Do you want to double-check PIN?")
+            raise BS21Exception(
+                "ERROR: Device has explicitly responded with error! Do you want to double-check PIN?")
 
         matcher = re.search(self._STATUS_PATTERN, response)
         if matcher == None:
             raise BS21Exception("ERROR: Unexpected response from device!")
 
         _state = {
-            "model" : matcher.group(1),
-            "serial" : matcher.group(2),
-            "firmware" : matcher.group(5),
-            "on" : matcher.group(3) == "1",
-            "overtemp" :  (ord(matcher.group(4)) & 2) > 0,
-            "power" :     (ord(matcher.group(4)) & 4) > 0,
-            "random" :    (ord(matcher.group(4)) & 8) > 0,
-            "countdown" : (ord(matcher.group(4)) & 16) > 0
-            }
+            "model": matcher.group(1),
+            "serial": matcher.group(2),
+            "firmware": matcher.group(5),
+            "on": matcher.group(3) == "1",
+            "overtemp":  (ord(matcher.group(4)) & 2) > 0,
+            "power":     (ord(matcher.group(4)) & 4) > 0,
+            "random":    (ord(matcher.group(4)) & 8) > 0,
+            "countdown": (ord(matcher.group(4)) & 16) > 0
+        }
 
         # day_in_hex = hex(int(matcher.group(6))).replace("x", "0")
         day_in_hex = matcher.group(6)
-        _time = self._build_weekdays_and_time(day_in_hex, matcher.group(7), matcher.group(8), matcher.group(9))
+        _time = self._build_weekdays_and_time(
+            day_in_hex, matcher.group(7), matcher.group(8), matcher.group(9))
 
         return _state, _time
-
-
-
 
     def _parse_info(self, response):
 
         if not response.startswith("$OK"):
-            raise BS21Exception("ERROR: Device has explicitly responded with error! Do you want to double-check PIN?")
+            raise BS21Exception(
+                "ERROR: Device has explicitly responded with error! Do you want to double-check PIN?")
 
         if len(response) != 442:
             raise BS21Exception("ERROR: Unexpected response from device!")
 
         raw = response[14:372].split(" ")
-        _timers = []
+        _schedulers = []
         for i in range(40):
-            _timers.append({
-                "slot" : i + 1,
-                "type" : "on" if i <=19 else "off",
-                "schedule" : self._build_weekdays_and_time(raw[i * 3], raw[i * 3 + 1], raw[i * 3 + 2])
+            _schedulers.append({
+                "slot": i + 1,
+                "type": "on" if i <= 19 else "off",
+                "schedule": self._build_weekdays_and_time(raw[i * 3], raw[i * 3 + 1], raw[i * 3 + 2])
             })
 
         raw = response[374:414].split(" ")
         _random = {
-            "slot" : 41,
-            "active" : True if raw[5] != "00" else False,
-            "schedule" : self._build_weekdays_and_time(raw[0], raw[1], raw[2]),
-            "duration" : self._build_time(raw[3], raw[4])
+            "slot": 41,
+            "active": True if raw[5] != "00" else False,
+            "schedule": self._build_weekdays_and_time(raw[0], raw[1], raw[2]),
+            "duration": self._build_time(raw[3], raw[4])
         }
 
         raw = response[416:439].split(" ")
 
-        original = datetime.datetime(2000, 1, 1, int(raw[5]), int(raw[6]), int(raw[7]))
-        remaining = datetime.timedelta(hours = int(raw[1]), minutes = int(raw[2]), seconds = int(raw[3]))
+        original = datetime.datetime(
+            2000, 1, 1, int(raw[5]), int(raw[6]), int(raw[7]))
+        remaining = datetime.timedelta(
+            hours=int(raw[1]), minutes=int(raw[2]), seconds=int(raw[3]))
         _countdown = {
-            "slot" : 43,
-            "active" : True if raw[4] != "00" else False,
-            "type" : "on" if raw[0] != "00" else "off",
-            "remaining" : self._build_time(raw[1], raw[2], raw[3]),
-            "elapsed" : (original - remaining).strftime("%H:%M:%S"),
-            "original" : self._build_time(raw[5], raw[6], raw[7])
-            }
+            "slot": 43,
+            "active": True if raw[4] != "00" else False,
+            "type": "on" if raw[0] != "00" else "off",
+            "remaining": self._build_time(raw[1], raw[2], raw[3]),
+            "elapsed": (original - remaining).strftime("%H:%M:%S"),
+            "original": self._build_time(raw[5], raw[6], raw[7])
+        }
 
-        return _timers, _random, _countdown
-
-
-
-
-
-    def _build_weekdays_and_time(self, day, hour, minute, second = 0):
+        return _schedulers, _random, _countdown
+    def _build_weekdays_and_time(self, day, hour, minute, second=0):
 
         _hour = int(hour) % 24
         _minute = int(minute) % 60
@@ -395,16 +374,12 @@ class BS21():
             i *= 2
 
         time = {
-            "weekday" : weekdays,
-            "time" : self._build_time(_hour, _minute, _second)
-            }
+            "weekday": weekdays,
+            "time": self._build_time(_hour, _minute, _second)
+        }
 
         return time
-
-
-
-
-    def _build_time(self, hour, minute, second = 0):
+    def _build_time(self, hour, minute, second=0):
 
         _hour = int(hour) % 24
         _minute = int(minute) % 60
@@ -414,14 +389,9 @@ class BS21():
 
         return _time
 
-
-
-
     def _parse_response(self, response):
 
         return response.startswith("$OK")
-
-
 
 
     def get_status(self):
@@ -439,14 +409,9 @@ class BS21():
 
         return True, _time, _status
 
-
-
-
     def get_device(self):
 
         return self._device
-
-
 
 
     def sync_time(self):
@@ -457,7 +422,8 @@ class BS21():
         now = datetime.datetime.now()
         weekday = hex(pow(2, now.weekday())).replace("x", "0")[-2:]
 
-        payload = self._PAYLOAD["sync"] % (weekday, now.hour, now.minute, now.second)
+        payload = self._PAYLOAD["sync"] % (
+            weekday, now.hour, now.minute, now.second)
         response = self._send(payload)
 
         _status, _time = self._parse_status(response)
@@ -469,27 +435,22 @@ class BS21():
 
         return True, _time, _status
 
-
-
-
-    def get_timers(self):
+    def get_schedulers(self):
 
         if self._debug:
-            print(" SEND: get timers")
+            print(" SEND: get schedulers")
 
-        response = self._send(self._PAYLOAD["timers"])
-        _timers, _random, _countdown = self._parse_info(response)
+        response = self._send(self._PAYLOAD["schedulers"])
+        _schedulers, _random, _countdown = self._parse_info(response)
 
-        self._device["timers"] = _timers
+        self._device["schedulers"] = _schedulers
         self._device["random"] = _random
         self._device["countdown"] = _countdown
 
         if self._debug:
-            print(" SUCCESS: timers received")
+            print(" SUCCESS: schedulers received")
 
-        return True, _timers, _random, _countdown
-
-
+        return True, _schedulers, _random, _countdown
 
 
     def turn_on(self):
@@ -507,9 +468,6 @@ class BS21():
 
         return True, _time, _status
 
-
-
-
     def turn_off(self):
 
         if self._debug:
@@ -525,15 +483,10 @@ class BS21():
 
         return True, _time, _status
 
-
-
-
     def is_on(self):
 
         b, _time, _status = self.get_status()
         return True == _status["on"]
-
-
 
 
     def toggle(self):
@@ -542,8 +495,6 @@ class BS21():
             self.turn_off()
         else:
             self.turn_on()
-
-
 
 
     def _build_daymask(self, mon, tue, wed, thu, fri, sat, sun):
@@ -559,13 +510,10 @@ class BS21():
 
         return hex(b).replace("x", "0")[-2:].upper()
 
-
-
-
-    def set_timer(self, id, type, hours, minutes, mon, tue, wed, thu, fri, sat, sun):
+    def set_scheduler(self, id, type, hours, minutes, mon, tue, wed, thu, fri, sat, sun):
 
         if self._debug:
-            print(" SEND: set timer")
+            print(" SEND: set scheduler")
 
         _id = int(id) % 20
         _id = _id if type == "on" else _id + 20
@@ -574,40 +522,35 @@ class BS21():
         _m = int(minutes) % 60
         _s = 0
 
-        payload = self._PAYLOAD["timer"] % (_id, _d, _h, _m, _s)
+        payload = self._PAYLOAD["scheduler"] % (_id, _d, _h, _m, _s)
         response = self._send(payload)
 
         if not self._parse_response(response):
             raise BS21Exception("ERROR: Device returned error!")
 
         if self._debug:
-            print(" SUCCESS: Timer set")
+            print(" SUCCESS: scheduler set")
 
         return True
 
-
-
-
-    def reset_timer(self, id, type):
+    def reset_scheduler(self, id, type):
 
         if self._debug:
-            print(" SEND: clear timer")
+            print(" SEND: clear scheduler")
 
         _id = int(id) % 20
         _id = _id if type == "on" else _id + 20
 
-        payload = self._PAYLOAD["timer-clear"] % _id
+        payload = self._PAYLOAD["scheduler-clear"] % _id
         response = self._send(payload)
 
         if not self._parse_response(response):
             raise BS21Exception("ERROR: Device returned error!")
 
         if self._debug:
-            print(" SUCCESS: Timer cleared")
+            print(" SUCCESS: scheduler cleared")
 
         return True
-
-
 
 
     def set_random(self, hours, minutes, dur_hours, dur_minutes, mon, tue, wed, thu, fri, sat, sun):
@@ -634,9 +577,6 @@ class BS21():
 
         return True
 
-
-
-
     def reset_random(self):
 
         if self._debug:
@@ -653,8 +593,6 @@ class BS21():
             print(" SUCCESS: Random mode cleared")
 
         return True
-
-
 
 
     def set_countdown(self, hours, minutes, seconds, type):
@@ -678,13 +616,11 @@ class BS21():
 
         return True
 
-
-
-
     def set_countdown_until(self, hour, minute, type):
 
         now = datetime.datetime.now()
-        then = datetime.datetime(1900, 1, 1, int(hour) % 24, int(minute) % 60, 0)
+        then = datetime.datetime(1900, 1, 1, int(hour) %
+                                 24, int(minute) % 60, 0)
 
         duration = (then - now)
         _h = duration.seconds // 3600
@@ -692,9 +628,6 @@ class BS21():
         _s = duration.seconds % 60
 
         self.set_countdown(_h, _m, _s, type)
-
-
-
 
     def reset_countdown(self):
 
@@ -714,29 +647,24 @@ class BS21():
         return True
 
 
-
-
     def reset_all(self):
 
         if self._debug:
-            print(" SEND: clear all timers")
+            print(" SEND: clear all schedulers")
 
         response = self._send(self._PAYLOAD["clear-all"])
 
         if not self._parse_response(response):
             raise BS21Exception("ERROR: Device returned error")
 
-        self._device["timers"] = []
+        self._device["schedulers"] = []
         self._device["random"] = None
         self._device["countdown"] = None
 
         if self._debug:
-            print(" SUCCESS: all timers cleared")
+            print(" SUCCESS: all schedulers cleared")
 
         return True
-
-
-
 
     def change_pin(self, newpin):
 
@@ -755,9 +683,6 @@ class BS21():
 
         return True, newpin
 
-
-
-
     def set_visible(self):
 
         if self._debug:
@@ -771,17 +696,12 @@ class BS21():
         return True
 
 
-
-
     def disconnect(self):
 
         if self._client_socket is not None:
             self._client_socket.close()
 
-
-
-
-def _build_help(cmd, header = False, msg = ""):
+def _build_help(cmd, header=False, msg=""):
 
     s = ""
 
@@ -798,13 +718,13 @@ def _build_help(cmd, header = False, msg = ""):
         s += "\n " + msg
 
     if cmd is not None and cmd in COMMANDS:
-        s += "\n " + COMMANDS[cmd][_USAGE].ljust(32) + "\t" + COMMANDS[cmd][_DESCR]
+        s += "\n " + \
+            COMMANDS[cmd][_USAGE].ljust(32) + "\t" + COMMANDS[cmd][_DESCR]
 
     if msg != "":
         s += "\n"
 
     return s
-
 
 
 
@@ -819,15 +739,14 @@ def _help():
     return s
 
 
-
-
 def _read_aliases(target, pin):
 
     is_mac = re.search(BS21.MAC_PATTERN, target)
     if is_mac:
         pattern = "(%s)[ \t]+([0-9]{4})[ \t]+(.+)" % target
     else:
-        pattern = "(%s)[ \t]+([0-9]{4})[ \t]+(.*%s.*)" % (BS21.MAC_PATTERN, target)
+        pattern = "(%s)[ \t]+([0-9]{4})[ \t]+(.*%s.*)" % (
+            BS21.MAC_PATTERN, target)
 
     filename = os.path.join(os.environ['HOME'], ".known_bs21")
     if os.path.isfile(filename):
@@ -847,17 +766,13 @@ def _read_aliases(target, pin):
         return None, pin, target
 
 
-
-
-def _translate_for_timer_call(id, type, weekdays, hours, minutes):
+def _translate_for_scheduler_call(id, type, weekdays, hours, minutes):
 
     params = [id, type, hours, minutes]
     for i in range(len(weekdays)):
-        params.append(weekdays[i].isupper())
+        params.append(weekdays[i].isupper() and weekdays[i] != "_")
 
     return params
-
-
 
 
 def _translate_for_random_call(weekdays, hours, minutes, dur_hours, dur_minutes):
@@ -867,7 +782,6 @@ def _translate_for_random_call(weekdays, hours, minutes, dur_hours, dur_minutes)
         params.append(weekdays[i].isupper())
 
     return params
-
 
 
 
@@ -893,39 +807,35 @@ def printable_status(mac, pin, alias, time, status):
     return s
 
 
-
-
-def printable_timers(timers, random, countdown):
+def printable_schedulers(schedulers, random, countdown):
 
     s = ""
 
     if len(random["schedule"]["weekday"]) > 0:
         s += " Random:           %s on %s for %s hours, %s\n" % (
-                                            random["schedule"]["time"],
-                                            ", ".join(random["schedule"]["weekday"]),
-                                            random["duration"][:-3],
-                                            "active" if random["active"] else "inactive"
-                                            )
+            random["schedule"]["time"],
+            ", ".join(random["schedule"]["weekday"]),
+            random["duration"][:-3],
+            "active" if random["active"] else "inactive"
+        )
 
     if countdown["active"]:
         s += " Countdown:        %s, switch %s in %s\n" % (
-                                                "Running" if countdown["active"] else "Stopped",
-                                                countdown["type"],
-                                                countdown["remaining"]
-                                                )
+            "Running" if countdown["active"] else "Stopped",
+            countdown["type"],
+            countdown["remaining"]
+        )
 
-    for timer in timers:
-        if len(timer["schedule"]["weekday"]) > 0:
-            s += " Timer %02d:         Switch %s at %s on %s\n" % (
-                                                timer["slot"] % 20,
-                                                timer["type"],
-                                                timer["schedule"]["time"][:-3],
-                                                ", ".join(timer["schedule"]["weekday"])
-                                                )
+    for scheduler in schedulers:
+        if len(scheduler["schedule"]["weekday"]) > 0:
+            s += " Scheduler %02d:         Switch %s at %s on %s\n" % (
+                scheduler["slot"] % 20,
+                scheduler["type"],
+                scheduler["schedule"]["time"][:-3],
+                ", ".join(scheduler["schedule"]["weekday"])
+            )
 
     return s
-
-
 
 
 def do_commands(target, pin, commands):
@@ -933,7 +843,8 @@ def do_commands(target, pin, commands):
     mac, pin, alias = _read_aliases(target, pin)
 
     if mac == None:
-        raise BS21Exception(_build_help(None, True, "No alias found. Please check mac address!"))
+        raise BS21Exception(_build_help(
+            None, True, "No alias found. Please check mac address!"))
 
     if pin == None:
         raise BS21Exception(_build_help(None, True, "No pin given?!"))
@@ -978,12 +889,12 @@ def do_commands(target, pin, commands):
             elif func == "random-clear":
                 bs21.reset_random()
 
-            elif func == "timer":
-                params = _translate_for_timer_call(*call)
-                bs21.set_timer(*tuple(params))
+            elif func == "scheduler":
+                params = _translate_for_scheduler_call(*call)
+                bs21.set_scheduler(*tuple(params))
 
-            elif func == "timer-clear":
-                bs21.reset_timer(*call)
+            elif func == "scheduler-clear":
+                bs21.reset_scheduler(*call)
 
             elif func == "clear-all":
                 bs21.reset_all()
@@ -997,15 +908,15 @@ def do_commands(target, pin, commands):
             elif func == "sync":
                 bs21.sync_time()
 
-            elif func == "timers":
-                b, timers, random, countdown = bs21.get_timers()
-                print(printable_timers(timers, random, countdown))
+            elif func == "schedulers":
+                b, schedulers, random, countdown = bs21.get_schedulers()
+                print(printable_schedulers(schedulers, random, countdown))
 
             elif func == "json":
                 bs21.get_status()
-                bs21.get_timers()
+                bs21.get_schedulers()
                 device = bs21.get_device()
-                print(json.dumps(device, indent = 2, sort_keys = False))
+                print(json.dumps(device, indent=2, sort_keys=False))
 
             elif func == "sleep":
                 time.sleep(int(call[0]))
@@ -1015,8 +926,8 @@ def do_commands(target, pin, commands):
 
             else:
                 raise BS21Exception(_help()
-                    + "\n\n ERROR: Invalid command "
-                    + "<" + func + ">\n")
+                                    + "\n\n ERROR: Invalid command "
+                                    + "<" + func + ">\n")
 
     except BS21Exception as ex:
         raise BS21Exception(_build_help(None, False, ex.message))
@@ -1026,8 +937,6 @@ def do_commands(target, pin, commands):
             bs21.disconnect()
 
 
-
-
 def _list_to_string(l):
 
     s = ""
@@ -1035,7 +944,6 @@ def _list_to_string(l):
         s += chr(c) if c != 0 else ""
 
     return s
-
 
 
 
@@ -1056,7 +964,7 @@ def _translate_commands(commands):
         if len(cmd_def[_PARAMS]) != len(params):
             errors.append(
                 _build_help(func, False,
-                    "ERROR: Please check parameters of command\n")
+                            "ERROR: Please check parameters of command\n")
             )
             continue
 
@@ -1066,7 +974,7 @@ def _translate_commands(commands):
             if m is None:
                 errors.append(
                     _build_help(func, False,
-                        "ERROR: Please check parameters of command, especially parameter %i\n" % (i + 1))
+                                "ERROR: Please check parameters of command, especially parameter %i\n" % (i + 1))
                 )
                 break
 
@@ -1076,13 +984,13 @@ def _translate_commands(commands):
             command["call"] = call
 
     if len(commands) == 0:
-        errors.append(_help() + "\n\n ERROR: No commands given. What can I do for you?\n")
+        errors.append(
+            _help() + "\n\n ERROR: No commands given. What can I do for you?\n")
 
     if len(errors) > 0:
         raise BS21Exception("\n".join(errors))
 
     return commands
-
 
 
 
@@ -1093,11 +1001,11 @@ def parse_args(args):
     commands = []
 
     # get target
-    if len(args) > 0 and not args[0].startswith("-"):
+    if len(args) > 0 and not args[0].startswith("--"):
         target = args.pop(0)
 
     # get optional pin
-    if len(args) > 0 and not args[0].startswith("-"):
+    if len(args) > 0 and not args[0].startswith("--"):
         pin = args.pop(0)
 
     # collect commands
@@ -1106,17 +1014,17 @@ def parse_args(args):
         arg = args.pop(0)
 
         # command starts
-        if arg.startswith("-"):
-            arg = arg[1:]
+        if arg.startswith("--"):
+            arg = arg[2:]
             if arg not in COMMANDS:
                 raise BS21Exception(_help()
-                        + "\n\n ERROR: Invalid command "
-                        + "-" + arg + "\n")
+                                    + "\n\n ERROR: Invalid command "
+                                    + "--" + arg + "\n")
             command = {
-                "func" : arg,
-                "params" : [],
-                "call" : []
-                }
+                "func": arg,
+                "params": [],
+                "call": []
+            }
             commands += [command]
 
         # collect parameters of current command
@@ -1129,18 +1037,17 @@ def parse_args(args):
 
 
 
-
 if __name__ == "__main__":
     try:
         commands = sys.argv[1:]
 
         # help for specific command
-        if len(commands) == 2 and commands[0] == "-help" and commands[1] in COMMANDS:
+        if len(commands) == 2 and commands[0] == "--help" and commands[1] in COMMANDS:
             print(_build_help(commands[1]))
             exit(0)
 
         # general help
-        elif len(commands) == 0 or commands[0] == "-help":
+        elif len(commands) == 0 or commands[0] == "--help":
             print(_help())
             exit(0)
 
