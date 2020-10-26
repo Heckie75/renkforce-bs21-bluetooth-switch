@@ -826,10 +826,13 @@ def printable_schedulers(schedulers, random, countdown):
             countdown["remaining"]
         )
 
-    for scheduler in schedulers:
+
+
+    for scheduler in sorted(schedulers, key=lambda s: s["slot"] % 20):
         if len(scheduler["schedule"]["weekday"]) > 0:
-            s += " Scheduler %02d:         Switch %s at %s on %s\n" % (
+            s += " Scheduler %02d %s:\tSwitch %s at %s on %s\n" % (
                 scheduler["slot"] % 20,
+                scheduler["type"],
                 scheduler["type"],
                 scheduler["schedule"]["time"][:-3],
                 ", ".join(scheduler["schedule"]["weekday"])
