@@ -160,7 +160,6 @@ COMMANDS = {
 }
 
 
-
 class BS21Exception(Exception):
     def __init__(self, message):
         self.message = message
@@ -246,7 +245,6 @@ class BS21():
     def set_debug(self, b):
 
         self._debug = b
-
 
     def _connect(self, timeout):
 
@@ -348,18 +346,21 @@ class BS21():
 
         original = datetime.datetime(
             2000, 1, 1, int(raw[5]), int(raw[6]), int(raw[7]))
+
+        _remaining_secs = int(raw[7]) if raw[3].startswith("I") else int(raw[3])
         remaining = datetime.timedelta(
-            hours=int(raw[1]), minutes=int(raw[2]), seconds=int(raw[3]))
+            hours=int(raw[1]), minutes=int(raw[2]), seconds=_remaining_secs)
         _countdown = {
             "slot": 43,
             "active": True if raw[4] != "00" else False,
             "type": "on" if raw[0] != "00" else "off",
-            "remaining": self._build_time(raw[1], raw[2], raw[3]),
+            "remaining": self._build_time(raw[1], raw[2], _remaining_secs),
             "elapsed": (original - remaining).strftime("%H:%M:%S"),
             "original": self._build_time(raw[5], raw[6], raw[7])
         }
 
         return _schedulers, _random, _countdown
+
     def _build_weekdays_and_time(self, day, hour, minute, second=0):
 
         _hour = int(hour) % 24
@@ -379,6 +380,7 @@ class BS21():
         }
 
         return time
+
     def _build_time(self, hour, minute, second=0):
 
         _hour = int(hour) % 24
@@ -392,7 +394,6 @@ class BS21():
     def _parse_response(self, response):
 
         return response.startswith("$OK")
-
 
     def get_status(self):
 
@@ -412,7 +413,6 @@ class BS21():
     def get_device(self):
 
         return self._device
-
 
     def sync_time(self):
 
@@ -452,7 +452,6 @@ class BS21():
 
         return True, _schedulers, _random, _countdown
 
-
     def turn_on(self):
 
         if self._debug:
@@ -488,14 +487,12 @@ class BS21():
         b, _time, _status = self.get_status()
         return True == _status["on"]
 
-
     def toggle(self):
 
         if self.is_on():
             self.turn_off()
         else:
             self.turn_on()
-
 
     def _build_daymask(self, mon, tue, wed, thu, fri, sat, sun):
 
@@ -552,7 +549,6 @@ class BS21():
 
         return True
 
-
     def set_random(self, hours, minutes, dur_hours, dur_minutes, mon, tue, wed, thu, fri, sat, sun):
 
         if self._debug:
@@ -593,7 +589,6 @@ class BS21():
             print(" SUCCESS: Random mode cleared")
 
         return True
-
 
     def set_countdown(self, hours, minutes, seconds, type):
 
@@ -646,7 +641,6 @@ class BS21():
 
         return True
 
-
     def reset_all(self):
 
         if self._debug:
@@ -695,11 +689,11 @@ class BS21():
 
         return True
 
-
     def disconnect(self):
 
         if self._client_socket is not None:
             self._client_socket.close()
+
 
 def _build_help(cmd, header=False, msg=""):
 
@@ -725,7 +719,6 @@ def _build_help(cmd, header=False, msg=""):
         s += "\n"
 
     return s
-
 
 
 def _help():
@@ -784,7 +777,6 @@ def _translate_for_random_call(weekdays, hours, minutes, dur_hours, dur_minutes)
     return params
 
 
-
 def printable_status(mac, pin, alias, time, status):
 
     s = "\n"
@@ -825,8 +817,6 @@ def printable_schedulers(schedulers, random, countdown):
             countdown["type"],
             countdown["remaining"]
         )
-
-
 
     for scheduler in sorted(schedulers, key=lambda s: s["slot"] % 20):
         if len(scheduler["schedule"]["weekday"]) > 0:
@@ -949,7 +939,6 @@ def _list_to_string(l):
     return s
 
 
-
 def _translate_commands(commands):
 
     errors = []
@@ -996,7 +985,6 @@ def _translate_commands(commands):
     return commands
 
 
-
 def parse_args(args):
 
     target = None
@@ -1037,7 +1025,6 @@ def parse_args(args):
     commands = _translate_commands(commands)
 
     return target, pin, commands
-
 
 
 if __name__ == "__main__":
