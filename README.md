@@ -87,17 +87,19 @@ $ bs21.py 5C:B6:CC:00:28:38 1234 --on
 In order to get an overview of the full feature set enter the following:
 ```
 $ bs21 --help
- Renkforce BS-21 bluetooth power switch command line interface  for Linux / Raspberry Pi
+ Renkforce BS-21 bluetooth power switch command line interface  for Linux / Raspberry Pi / Windows
 
  USAGE:   bs21.py <mac> <pin> <command1> <params1> <command2> ...
  EXAMPLE: sync time and power on
           $ ./bs21.py 5C:B6:CC:00:1A:AE 1234 -sync -on
 
+ --aliases                              print known aliases from .known_bs21 file
  --clear-all                            clears alls schedulers, random mode and countdown
  --countdown <hh:mm:ss> <on|off>        starts countdown with action (turn on / turn off) and duration
  --countdown-clear                      resets countdown
  --countdown-until <hh:mm> <on|off>     starts countdown with action (turn on / turn off) and specific endtime
  --debug                                prints raw data sent and received
+ --devices                              print devices that are paired with this system
  --json                                 prints information in json format
  --off                                  power switch off
  --on                                   power switch on
