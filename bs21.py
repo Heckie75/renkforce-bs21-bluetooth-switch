@@ -265,7 +265,7 @@ class Device(Alias):
 
         if len(_aliases) > 0:
             for _d in _devices:
-                _a = next(filter(lambda _a: _a.address == _d.address, _aliases))
+                _a = next(filter(lambda _a: _a.address == _d.address, _aliases), None)
                 if _a:
                     _d.alias = _a.alias
                     _d.pin = _a.pin
@@ -537,7 +537,7 @@ class State(Device):
     def init_state_by_address(address):
 
         _d = next(filter(lambda _d: _d.address ==
-                  address, Device.get_devices()))
+                  address, Device.get_devices()), None)
         if _d:
             return State.init_state_from_device(_d)
 
@@ -787,7 +787,7 @@ class BS21():
     def _get_or_create_and_add_scheduler(self, id):
 
         scheduler = next(
-            filter(lambda _s: _s["slot"] == id, self._state.schedulers))
+            filter(lambda _s: _s["slot"] == id, self._state.schedulers), None)
         if not scheduler:
             scheduler = {
                 "slot": id
