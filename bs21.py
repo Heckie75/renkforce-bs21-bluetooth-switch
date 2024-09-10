@@ -209,7 +209,7 @@ class Alias():
                 with open(filename, "r") as ins:
                     for line in ins:
                         _m = re.match(
-                            "([0-9A-Fa-f:]+) +([0-9]{4}) +(.*)$", line)
+                            r"([0-9A-Fa-f:]+) +([0-9]{4}) +(.*)$", line)
                         if _m:
                             aliases.append(Alias(address=_m.groups()[
                                            0], pin=_m.groups()[1], alias=_m.groups()[2]))
@@ -239,7 +239,7 @@ class Alias():
 
 class Device(Alias):
 
-    MAC_PATTERN = "5C:B6:CC:[0-9A-F]{2}:[0-9A-F]{2}:[0-9A-F]{2}"
+    MAC_PATTERN = r"5C:B6:CC:[0-9A-F]{2}:[0-9A-F]{2}:[0-9A-F]{2}"
 
     PORT_BLUETOOTH = "Bluetooth"
     PORT_SERIAL = "Serial"
@@ -265,10 +265,10 @@ class Device(Alias):
 
         if len(_aliases) > 0:
             for _d in _devices:
-                _a = next(filter(lambda _a: _a.address == _d.address, _aliases), None)
-                if _a:
-                    _d.alias = _a.alias
-                    _d.pin = _a.pin
+                a = [ _a for _a in _aliases if _a.address.upper() == _d.address.upper() ]
+                if a:
+                    _d.alias = a[0].alias
+                    _d.pin = a[0].pin
 
         return _devices
 
@@ -289,17 +289,17 @@ class Device(Alias):
             out, err = p2.communicate()
             return out.decode("utf8")
 
-        output = _exec_bluetoothctl()
+        output = _exec_bluetoothctl(commands=["list"])
 
         controllers = list()
-        for match in re.finditer("Controller ([0-9A-F:]+) (.+)", output):
+        for match in re.finditer(r"Controller ([0-9A-F:]+) (.+)", output):
             controllers.append(match.group(1))
 
         _devices = list()
         for controller in controllers:
             time.sleep(.25)
             output = _exec_bluetoothctl(["select %s" % controller, "devices"])
-            for match in re.finditer("Device (%s) (.+)" % Device.MAC_PATTERN, output):
+            for match in re.finditer(r"Device (%s) (.+)" % Device.MAC_PATTERN, output):
 
                 _devices.append(Device(
                     port=Device.PORT_BLUETOOTH,
@@ -337,13 +337,13 @@ class Device(Alias):
 
 class State(Device):
 
-    _NAME_PATTERN = "(BS-21)-([0-9]+)-([01])-(.)"
+    _NAME_PATTERN = r"(BS-21)-([0-9]+)-([01])-(.)"
     #                |     |        |       + Error Code, e.g. "A" is ASCII 65
     #                |     |        + 0=off, 1=on
     #                |     + Serial no., e.g. "004593"
     #                + Model, always "BS-21"
 
-    _STATUS_PATTERN = "\$(BS-21)-([0-9]+)-([01])-(.) (V[0-9]+.[0-9]+) ([0-9]{2}) ([0-9]{2}) ([0-9]{2}) ([0-9]{2})"
+    _STATUS_PATTERN = r"\$(BS-21)-([0-9]+)-([01])-(.) (V[0-9]+.[0-9]+) ([0-9]{2}) ([0-9]{2}) ([0-9]{2}) ([0-9]{2})"
     #                   ||       |        |      |   |                |          |          |          |         | Newline "\r\n"
     #                   ||       |        |      |   |                |          |          |          | Clock seconds, e.g. "59"
     #                   ||       |        |      |   |                |          |          | Clock minutes, e.g. "41"
